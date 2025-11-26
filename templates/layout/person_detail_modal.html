@@ -1,0 +1,45 @@
+<!-- templates/layout/person_detail_modal.html -->
+<div id="view-person-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 shadow-lg rounded-md bg-white modal-enter">
+        <div class="mt-3">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center pb-4 border-b">
+                <div class="flex items-center">
+                    <i class="fas fa-user-circle text-blue-600 text-2xl mr-3"></i>
+                    <h3 class="text-2xl font-bold text-gray-900">成员详情</h3>
+                </div>
+                <button onclick="window.personDetail.closeModal()"
+                        class="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 内容区域 -->
+            <div id="person-detail-content" class="mt-6 max-h-96 overflow-y-auto px-2">
+                <div class="animate-pulse space-y-4">
+                    <div class="h-6 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                </div>
+            </div>
+
+            <!-- 底部操作 -->
+            <div class="flex justify-between items-center mt-8 pt-4 border-t">
+                <div class="text-sm text-gray-500">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span id="person-update-time">最后更新: 加载中...</span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="window.personDetail.closeModal()"
+                            class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+                        <i class="fas fa-times mr-2"></i>关闭
+                    </button>
+                    <button onclick="window.personDetail.editCurrentPerson()"
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        <i class="fas fa-pencil-alt mr-2"></i>编辑信息
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

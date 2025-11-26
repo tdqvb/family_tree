@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家族成员管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="{{ url_for('static', filename='fontawesome-free-7.1.0-web/css/all.min.css') }}" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .date-input-group {
+            transition: all 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+        .date-format-hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        .tab-button:not(.active):hover {
+            color: #374151;
+            background-color: #f9fafb;
+        }
+
+        .tab-content {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+<!-- 引入header.html -->
+{% include 'layout/header.html' %}
+
+<!-- 主内容区 -->
+<main class="container mx-auto px-4 py-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        <!-- 成员列表（左侧，占2/3宽度） -->
+        <div class="lg:col-span-2">
+            {% include 'layout/personQueryList.html' %}
+        </div>
+
+        <!-- 右侧栏（占1/3宽度） -->
+        <div class="lg:col-span-1">
+            <!-- 标签切换 -->
+            <div class="bg-white rounded-lg shadow-md mb-4 card-shadow">
+                <div class="flex border-b border-gray-200">
+                    <button id="tab-add-person"
+                            class="tab-button flex-1 py-3 px-4 text-center font-medium text-blue-600 border-b-2 border-blue-600 bg-blue-50">
+                        <i class="fas fa-user-plus mr-2"></i>新增成员
+                    </button>
+                    <button id="tab-add-relationship"
+                            class="tab-button flex-1 py-3 px-4 text-center font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-users mr-2"></i>添加关系
+                    </button>
+                </div>
+            </div>
+
+            <!-- 标签内容 -->
+            <div id="tab-content-add-person" class="tab-content">
+                {% include 'layout/personAdd.html' %}
+            </div>
+
+            <div id="tab-content-add-relationship" class="tab-content hidden">
+                {% include 'layout/relationshipAdd.html' %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 引入footer.html -->
+{% include 'layout/footer.html' %}
+
+<!-- 引入JavaScript文件 -->
+
+<!-- 1. 先加载基础工具类 -->
+<script src="{{ url_for('static', filename='js/utils/domHelper.js') }}"></script>
+<script src="{{ url_for('static', filename='js/utils/dateFormatter.js') }}"></script>
+<script src="{{ url_for('static', filename='js/utils/dateDataParser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/utils/dateInputRenderer.js') }}"></script>
+<script src="{{ url_for('static', filename='js/utils/formDataCollector.js') }}"></script>
+
+<!-- 2. 然后加载通用组件（按依赖顺序） -->
+<script src="{{ url_for('static', filename='js/components/personSearch.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/messageManager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/tabManager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/formValidator.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/dateInputManager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/relationshipInputManager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/formSubmitter.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/dataTable.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/pagination.js') }}"></script>
+
+<!-- 3. 接着加载API服务层 -->
+<script src="{{ url_for('static', filename='js/api/personApi.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/relationshipApi.js') }}"></script>
+
+<!-- 4. 最后加载页面业务逻辑（按功能独立性） -->
+<script src="{{ url_for('static', filename='js/pages/personForm.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages/relationshipAdd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages/personDetail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages/personEdit.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages/personList.js') }}"></script>
+
+</body>
+</html>

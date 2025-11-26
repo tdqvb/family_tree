@@ -4,6 +4,7 @@ tests
 
 # 屏蔽static目录下的文件夹
 static/bootstrap-5.1.0-dist/
+static/fontawesome-free-7.1.0-web/
 static/icon/
 static/img/
 static/ue/

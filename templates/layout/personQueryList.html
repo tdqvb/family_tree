@@ -1,0 +1,115 @@
+<!-- personQueryList.html -->
+
+<!-- 左侧：成员查询和列表（占2/3宽度） -->
+<div>
+    <!-- 查询表单 -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6 card-shadow">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fas fa-search text-blue-600 mr-2"></i> 查询成员
+        </h3>
+        <form id="search-form" class="flex flex-col md:flex-row gap-4">
+            <div class="flex-grow">
+                <label for="search-name" class="block text-sm font-medium text-gray-700 mb-1">按姓名搜索</label>
+                <input type="text" id="search-name" name="search-name" placeholder="输入成员姓名..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+            </div>
+            <div class="md:w-1/4">
+                <label for="search-gender" class="block text-sm font-medium text-gray-700 mb-1">性别筛选</label>
+                <select id="search-gender" name="search-gender"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+                    <option value="">不限</option>
+                    <option value="M">男</option>
+                    <option value="F">女</option>
+                </select>
+            </div>
+            <div class="md:w-auto flex items-end">
+                <button type="submit"
+                        class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center">
+                    <i class="fas fa-search mr-2"></i> 查询
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 成员列表 -->
+    <div class="bg-white rounded-lg shadow-md card-shadow">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-semibold flex items-center">
+                <i class="fas fa-list text-blue-600 mr-2"></i> 成员列表
+            </h3>
+            <span id="total-persons" class="text-sm text-gray-500">加载中...</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        ID
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        姓名
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        性别
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        出生日期
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        状态
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="persons-tbody">
+                <!-- 数据将由JavaScript动态填充 -->
+                <tr>
+                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>加载成员数据中...</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页控件 -->
+        <div class="px-6 py-3 flex items-center justify-between border-t border-gray-200">
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p id="pagination-info" class="text-sm text-gray-700">
+                        加载中...
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" id="prev-page"
+                           class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">上一页</span>
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                        <!-- 页码将由JavaScript动态生成 -->
+                        <a href="#" id="next-page"
+                           class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">下一页</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入查看成员详情模态框 -->
+{% include 'layout/person_detail_modal.html' %}
+
+<!-- 引入编辑成员模态框 -->
+{% include 'layout/person_edit_modal.html' %}
