@@ -20,19 +20,23 @@ class PersonEdit {
     }
 
     initializeDateManagers() {
-        // 初始化出生日期管理器
-        this.birthDateManager = new DateInputManager('birth', 'edit-birth_date_accuracy', {
-            exact: 'edit-birth_date_exact',
-            year_month: 'edit-birth_date_month',
-            year_only: 'edit-birth_date_year'
-        });
+        console.log('📅 初始化编辑表单日期管理器');
+        try {
+            // 每次都重新初始化
+            this.birthDateManager = new DateInputManager({
+                containerId: 'birth_date_container',
+                accuracySelectId: 'birth_date_accuracy',
+                type: 'birth'
+            });
 
-        // 初始化逝世日期管理器
-        this.deathDateManager = new DateInputManager('death', 'edit-death_date_accuracy', {
-            exact: 'edit-death_date_exact',
-            year_month: 'edit-death_date_month',
-            year_only: 'edit-death_date_year'
-        });
+            this.deathDateManager = new DateInputManager({
+                containerId: 'death_date_container',
+                accuracySelectId: 'death_date_accuracy',
+                type: 'death'
+            });
+        } catch (error) {
+            console.error('❌ 初始化日期管理器失败:', error);
+        }
     }
 
     bindEvents() {
@@ -102,131 +106,143 @@ class PersonEdit {
     }
 
     renderEditForm(person) {
-        const container = document.getElementById('edit-person-form-container');
-        if (!container) return;
+    const container = document.getElementById('edit-person-form-container');
+    if (!container) return;
 
-        // 解析日期数据
-        const birthDateData = DateUtils.parseDateData(
-            person.birth_date,
-            person.birth_date_accuracy,
-            person.birth_date_type
-        );
-        const deathDateData = DateUtils.parseDateData(
-            person.death_date,
-            person.death_date_accuracy,
-            person.death_date_type
-        );
+    // 解析日期数据
+    const birthDateData = DateUtils.parseDateData(
+        person.birth_date,
+        person.birth_date_accuracy,
+        person.birth_date_type
+    );
+    const deathDateData = DateUtils.parseDateData(
+        person.death_date,
+        person.death_date_accuracy,
+        person.death_date_type
+    );
 
-        const showDeathInfo = person.is_living === false;
+    const showDeathInfo = person.is_living === false;
 
-        container.innerHTML = `
-            <form id="edit-person-form" class="space-y-6">
-                <!-- 基本信息 -->
-                <div class="mb-4">
-                    <label for="edit-name" class="block text-sm font-medium text-gray-700 mb-1">姓名 <span class="text-red-500">*</span></label>
-                    <input type="text" id="edit-name" name="name" value="${DomUtils.escapeHtml(person.name || '')}" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+    container.innerHTML = `
+        <form id="edit-person-form" class="space-y-6">
+            <!-- 基本信息 -->
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名 <span class="text-red-500">*</span></label>
+                <input type="text" id="name" name="name" value="${DomUtils.escapeHtml(person.name || '')}" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">性别 <span class="text-red-500">*</span></label>
+                    <select id="gender" name="gender" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+                        <option value="">请选择</option>
+                        <option value="M" ${person.gender === 'M' ? 'selected' : ''}>男</option>
+                        <option value="F" ${person.gender === 'F' ? 'selected' : ''}>女</option>
+                    </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label for="edit-gender" class="block text-sm font-medium text-gray-700 mb-1">性别 <span class="text-red-500">*</span></label>
-                        <select id="edit-gender" name="gender" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
-                            <option value="">请选择</option>
-                            <option value="M" ${person.gender === 'M' ? 'selected' : ''}>男</option>
-                            <option value="F" ${person.gender === 'F' ? 'selected' : ''}>女</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="edit-is_living" class="block text-sm font-medium text-gray-700 mb-1">是否在世</label>
-                        <select id="edit-is_living" name="is_living"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
-                            <option value="true" ${person.is_living !== false ? 'selected' : ''}>是</option>
-                            <option value="false" ${person.is_living === false ? 'selected' : ''}>否</option>
-                        </select>
-                    </div>
+                <div>
+                    <label for="is_living" class="block text-sm font-medium text-gray-700 mb-1">是否在世</label>
+                    <select id="is_living" name="is_living"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+                        <option value="true" ${person.is_living !== false ? 'selected' : ''}>是</option>
+                        <option value="false" ${person.is_living === false ? 'selected' : ''}>否</option>
+                    </select>
                 </div>
+            </div>
 
-                <!-- 出生日期信息 -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">出生日期 <span class="text-red-500">*</span></label>
-                    <div class="mb-2">
-                        <select id="edit-birth_date_accuracy" name="birth_date_accuracy" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
-                            <option value="exact" ${person.birth_date_accuracy === 'exact' ? 'selected' : ''}>精确到日</option>
-                            <option value="year_month" ${person.birth_date_accuracy === 'year_month' ? 'selected' : ''}>精确到月</option>
-                            <option value="year_only" ${person.birth_date_accuracy === 'year_only' ? 'selected' : ''}>精确到年</option>
-                        </select>
-                    </div>
-                    <div id="edit-birth_date_container">
-                        ${DateUtils.renderDateInputs('birth', birthDateData)}
-                    </div>
+            <!-- 出生日期信息 -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">出生日期 <span class="text-red-500">*</span></label>
+                <div class="mb-2">
+                    <select id="birth_date_accuracy" name="birth_date_accuracy" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+                        <option value="exact" ${person.birth_date_accuracy === 'exact' ? 'selected' : ''}>精确到日</option>
+                        <option value="year_month" ${person.birth_date_accuracy === 'year_month' ? 'selected' : ''}>精确到月</option>
+                        <option value="year_only" ${person.birth_date_accuracy === 'year_only' ? 'selected' : ''}>精确到年</option>
+                    </select>
                 </div>
-
-                <!-- 逝世信息 -->
-                <div id="edit-death_info" class="mb-4 ${showDeathInfo ? '' : 'hidden'}">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">逝世日期 <span class="text-red-500">*</span></label>
-                    <div class="mb-2">
-                        <select id="edit-death_date_accuracy" name="death_date_accuracy" ${showDeathInfo ? 'required' : ''}
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
-                            <option value="exact" ${person.death_date_accuracy === 'exact' ? 'selected' : ''}>精确到日</option>
-                            <option value="year_month" ${person.death_date_accuracy === 'year_month' ? 'selected' : ''}>精确到月</option>
-                            <option value="year_only" ${person.death_date_accuracy === 'year_only' ? 'selected' : ''}>精确到年</option>
-                        </select>
-                    </div>
-                    <div id="edit-death_date_container">
-                        ${DateUtils.renderDateInputs('death', deathDateData, showDeathInfo)}
-                    </div>
+                <div id="birth_date_container">
+                    ${DateUtils.renderDateInputs('birth', birthDateData)}
                 </div>
+            </div>
 
-                <!-- 扩展信息 -->
-                <div class="mb-4">
-                    <label for="edit-phone" class="block text-sm font-medium text-gray-700 mb-1">电话</label>
-                    <input type="text" id="edit-phone" name="phone" value="${DomUtils.escapeHtml(person.phone || '')}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+            <!-- 逝世信息 -->
+            <div id="death_info" class="mb-4 ${showDeathInfo ? '' : 'hidden'}">
+                <label class="block text-sm font-medium text-gray-700 mb-1">逝世日期 <span class="text-red-500">*</span></label>
+                <div class="mb-2">
+                    <select id="death_date_accuracy" name="death_date_accuracy" ${showDeathInfo ? 'required' : ''}
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+                        <option value="exact" ${person.death_date_accuracy === 'exact' ? 'selected' : ''}>精确到日</option>
+                        <option value="year_month" ${person.death_date_accuracy === 'year_month' ? 'selected' : ''}>精确到月</option>
+                        <option value="year_only" ${person.death_date_accuracy === 'year_only' ? 'selected' : ''}>精确到年</option>
+                    </select>
                 </div>
-
-                <div class="mb-4">
-                    <label for="edit-email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-                    <input type="email" id="edit-email" name="email" value="${DomUtils.escapeHtml(person.email || '')}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+                <div id="death_date_container">
+                    ${DateUtils.renderDateInputs('death', deathDateData, showDeathInfo)}
                 </div>
+            </div>
 
-                <div class="mb-4">
-                    <label for="edit-birth_place" class="block text-sm font-medium text-gray-700 mb-1">出生地</label>
-                    <input type="text" id="edit-birth_place" name="birth_place" value="${DomUtils.escapeHtml(person.birth_place || '')}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
-                </div>
+            <!-- 扩展信息 -->
+            <div class="mb-4">
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">电话</label>
+                <input type="text" id="phone" name="phone" value="${DomUtils.escapeHtml(person.phone || '')}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+            </div>
 
-                <div class="mb-6">
-                    <label for="edit-biography" class="block text-sm font-medium text-gray-700 mb-1">生平简介</label>
-                    <textarea id="edit-biography" name="biography" rows="3"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">${DomUtils.escapeHtml(person.biography || '')}</textarea>
-                </div>
-            </form>
-        `;
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                <input type="email" id="email" name="email" value="${DomUtils.escapeHtml(person.email || '')}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+            </div>
 
-        // 初始化日期管理器
-        this.initializeDateManagers();
-        this.updateSaveButtonState();
-        this.bindFormEvents();
-    }
+            <div class="mb-4">
+                <label for="birth_place" class="block text-sm font-medium text-gray-700 mb-1">出生地</label>
+                <input type="text" id="birth_place" name="birth_place" value="${DomUtils.escapeHtml(person.birth_place || '')}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+            </div>
+
+            <div class="mb-6">
+                <label for="biography" class="block text-sm font-medium text-gray-700 mb-1">生平简介</label>
+                <textarea id="biography" name="biography" rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">${DomUtils.escapeHtml(person.biography || '')}</textarea>
+            </div>
+        </form>
+    `;
+
+    // 初始化日期管理器（使用无前缀的ID）
+    this.initializeDateManagers();
+    this.updateSaveButtonState();
+    this.bindFormEvents();
+}
 
     bindFormEvents() {
-        const form = document.getElementById('edit-person-form');
-        if (!form) return;
+    const form = document.getElementById('edit-person-form');
+    if (!form) return;
 
-        form.addEventListener('input', () => {
-            this.updateSaveButtonState();
+    // 使用无前缀的ID
+    const isLivingSelect = document.getElementById('is_living');
+    if (isLivingSelect) {
+        isLivingSelect.addEventListener('change', (e) => {
+            this.toggleDeathInfo(e.target.value === 'false');
         });
     }
 
-    toggleDeathInfo(show) {
-        DomUtils.showElement('edit-death_info', show);
-        DomUtils.setElementRequired('edit-death_date_accuracy', show);
+    // 实时验证
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => this.updateSaveButtonState());
+        input.addEventListener('change', () => this.updateSaveButtonState());
+    });
+
+    // 保存按钮
+    const saveBtn = document.getElementById('edit-save-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => this.savePersonEdit());
     }
+}
 
     async savePersonEdit() {
         if (!this.currentPerson) return;
@@ -271,8 +287,14 @@ class PersonEdit {
             errors.push('请填写完整的出生日期信息');
         }
 
-        if (formData.is_living === false && !this.deathDateManager.validateDate()) {
-            errors.push('请填写完整的逝世日期信息');
+        // 只有当人员不在世时才验证死亡日期
+        if (formData.is_living === false) {
+            if (!this.deathDateManager.validateDate()) {
+                errors.push('请填写完整的逝世日期信息');
+            }
+        } else {
+            // 如果在世，清空死亡日期相关字段
+            this.deathDateManager.clearDate();
         }
 
         return errors;
@@ -309,9 +331,18 @@ class PersonEdit {
 
     collectFormData() {
         const form = document.getElementById('edit-person-form');
-        const isLiving = form.querySelector('#edit-is_living')?.value === 'true';
+        const isLiving = form.querySelector('#is_living')?.value === 'true'; // 去掉 edit- 前缀
 
         return FormUtils.collectPersonData(form, isLiving);
+    }
+
+    // 修复 toggleDeathInfo 方法
+    toggleDeathInfo(show) {
+        const deathInfo = document.getElementById('death_info');
+        const deathAccuracy = document.getElementById('death_date_accuracy');
+
+        if (deathInfo) deathInfo.classList.toggle('hidden', !show);
+        if (deathAccuracy) deathAccuracy.required = show;
     }
 
     handleValidationError(errors) {
@@ -379,6 +410,8 @@ class PersonEdit {
         }
         this.currentPerson = null;
         this.originalData = null;
+        this.birthDateManager = null;
+        this.deathDateManager = null;
         this.messageManager.clearMessage();
     }
 
