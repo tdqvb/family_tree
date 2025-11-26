@@ -1,0 +1,33 @@
+migrations
+scripts
+tests
+
+# 屏蔽static目录下的文件夹
+static/bootstrap-5.1.0-dist/
+static/icon/
+static/img/
+static/ue/
+static/thumb/
+static/upload/
+
+# 屏蔽Python虚拟环境目录（常见名称）
+.venv/
+env/
+.env/
+
+# 屏蔽PyCharm的配置目录
+.idea/
+
+# 屏蔽Python编译生成的文件
+__pycache__/
+*.pyc
+*.pyo
+
+# 屏蔽其他临时文件或日志
+logs/
+temp/
+_demo/
+deepseek-html处理/
+
+# 忽略所有 .map 文件
+*.map
