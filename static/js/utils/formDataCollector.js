@@ -1,6 +1,6 @@
 // static/js/utils/formDataCollector.js
 class FormDataCollector {
-    static collectPersonFormData(form, isLiving) {
+    static collectPersonAddData(form, isLiving) {
         const formData = new FormData(form);
 
         const data = {

@@ -1,8 +1,8 @@
-// static/js/pages/personForm.js
+// static/js/pages/personAdd.js
 
-class PersonForm {
+class PersonAdd {
     constructor() {
-        console.log('🔧 初始化 PersonForm');
+        console.log('🔧 初始化 PersonAdd');
 
         // 初始化日期管理器
         this.birthDateManager = new DateInputManager(
@@ -46,7 +46,7 @@ class PersonForm {
         this.initEventListeners();
         this.toggleDeathInfo();
 
-        console.log('✅ PersonForm 初始化完成');
+        console.log('✅ PersonAdd 初始化完成');
     }
 
     /**
@@ -519,20 +519,20 @@ class PersonForm {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM加载完成，初始化 PersonForm');
+    console.log('📄 DOM加载完成，初始化 PersonAdd');
 
     // 确保表单存在才初始化
     if (document.getElementById('add-person-form')) {
-        window.personForm = new PersonForm();
-        console.log('✅ PersonForm 页面初始化完成');
+        window.personAdd = new PersonAdd();
+        console.log('✅ PersonAdd 页面初始化完成');
     } else {
-        console.log('❌ 未找到 add-person-form，跳过 PersonForm 初始化');
+        console.log('❌ 未找到 add-person-form，跳过 PersonAdd 初始化');
     }
 });
 
 // 如果页面被卸载，清理实例
 window.addEventListener('beforeunload', function() {
-    if (window.personForm && typeof window.personForm.destroy === 'function') {
-        window.personForm.destroy();
+    if (window.personAdd && typeof window.personAdd.destroy === 'function') {
+        window.personAdd.destroy();
     }
 });

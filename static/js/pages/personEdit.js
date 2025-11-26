@@ -327,7 +327,7 @@ class PersonEdit {
         const form = document.getElementById('edit-person-form');
         const isLiving = form.querySelector('#edit-is_living')?.value === 'true';
 
-        return FormDataCollector.collectPersonFormData(form, isLiving);
+        return FormDataCollector.collectPersonAddData(form, isLiving);
     }
 
     handleValidationError(errors) {
