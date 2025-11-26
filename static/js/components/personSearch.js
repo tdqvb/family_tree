@@ -1,3 +1,4 @@
+// static/js/components/personSearch.js
 /**
  * 可复用的人员搜索组件
  */
@@ -152,12 +153,8 @@ class PersonSearch {
      */
     async searchPersons(keyword) {
         try {
-            const response = await fetch(`/api/persons/search?keyword=${encodeURIComponent(keyword)}`);
-            if (response.ok) {
-                const data = await response.json();
-                return data.data || [];
-            }
-            return [];
+            const response = await ApiService.searchPersons(keyword);
+            return response.data || [];
         } catch (error) {
             console.error('API调用失败:', error);
             return [];
@@ -183,7 +180,7 @@ class PersonSearch {
                     <div class="font-medium">${person.name}</div>
                     <div class="text-sm text-gray-500">
                         ${person.gender === 'M' ? '男' : '女'}
-                        ${person.birth_date ? `· ${person.birth_date}` : ''}
+                        ${person.birth_date ? `· ${DateUtils.formatDateDisplay(person.birth_date, person.birth_date_type, person.birth_date_accuracy)}` : ''}
                         ${person.birth_place ? `· ${person.birth_place}` : ''}
                     </div>
                 </div>
@@ -289,3 +286,6 @@ class PersonSearch {
         this.container.innerHTML = '';
     }
 }
+
+// 全局导出
+window.PersonSearch = PersonSearch;

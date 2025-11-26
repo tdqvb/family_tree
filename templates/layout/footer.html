@@ -1,6 +1,55 @@
-<!-- 页脚 -->
-<footer class="bg-gray-800 text-white py-6 mt-12">
-<div class="container mx-auto px-4 text-center text-sm">
-  <p>家族成员管理系统 &copy; 2023 - 保留所有权利</p>
-</div>
+<!-- footer.html -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+            <!-- 系统信息 -->
+            <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start space-x-2 mb-4">
+                    <i class="fas fa-users text-blue-400 text-xl"></i>
+                    <h3 class="text-lg font-semibold">家族成员管理系统</h3>
+                </div>
+                <p class="text-gray-300 text-sm">
+                    专业的家族成员信息管理平台，帮助您更好地记录和维护家族关系。
+                </p>
+            </div>
+
+            <!-- 快速链接 -->
+            <div class="text-center">
+                <h4 class="font-semibold mb-4 text-blue-300">快速链接</h4>
+                <div class="space-y-2">
+                    <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">成员列表</a>
+                    <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">添加成员</a>
+                    <a href="#" class="block text-gray-300 hover:text-white transition-colors text-sm">关系管理</a>
+                </div>
+            </div>
+
+            <!-- 联系信息 -->
+            <div class="text-center md:text-right">
+                <h4 class="font-semibold mb-4 text-blue-300">技术支持</h4>
+                <div class="space-y-2 text-sm text-gray-300">
+                    <p class="flex items-center justify-center md:justify-end">
+                        <i class="fas fa-envelope mr-2 text-blue-400"></i>
+                        support@family.com
+                    </p>
+                    <p class="flex items-center justify-center md:justify-end">
+                        <i class="fas fa-phone mr-2 text-blue-400"></i>
+                        400-123-4567
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 版权信息 -->
+        <div class="border-t border-gray-700 pt-6 text-center">
+            <p class="text-gray-400 text-sm">
+                &copy; 2023-2024 家族成员管理系统 - 保留所有权利 |
+                <span id="current-year" class="text-blue-300"></span>
+            </p>
+        </div>
+    </div>
 </footer>
+
+<script>
+// 自动更新年份
+document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>

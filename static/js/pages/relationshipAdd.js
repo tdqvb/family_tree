@@ -1,5 +1,6 @@
+// static/js/pages/relationshipAdd.js
 /**
- * 关系页面主控制器 - 修复错误处理版本
+ * 关系页面主控制器 - 简化版本
  */
 class RelationshipAdd {
     constructor() {
@@ -11,7 +12,7 @@ class RelationshipAdd {
      * 初始化页面
      */
     init() {
-        console.log('🔧 初始化人员关系页面 - 修复错误处理版本');
+        console.log('🔧 初始化人员关系页面 - 简化版本');
         this.initializeComponents();
     }
 
@@ -56,7 +57,7 @@ class RelationshipAdd {
             console.log('📤 发送API请求:', formData);
 
             // 调用后端API
-            const result = await window.RelationshipApi.createRelationship(formData);
+            const result = await ApiService.createRelationship(formData);
 
             console.log('✅ 关系创建成功:', result);
             console.log('📊 消息列表:', result.creation_messages);
@@ -174,10 +175,10 @@ class RelationshipAdd {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM加载完成，初始化修复错误处理版关系页面');
+    console.log('🚀 DOM加载完成，初始化简化版关系页面');
     try {
         window.relationshipAdd = new RelationshipAdd();
-        console.log('✅ 修复错误处理版关系页面初始化成功');
+        console.log('✅ 简化版关系页面初始化成功');
     } catch (error) {
         console.error('❌ 关系页面初始化失败:', error);
     }

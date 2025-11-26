@@ -1,5 +1,4 @@
-// static/js/components/messageManager.js
-
+// static/js/core/messageManager.js
 class MessageManager {
     constructor(containerSelector = 'body', messageId = 'form-message') {
         this.containerSelector = containerSelector;
@@ -7,7 +6,7 @@ class MessageManager {
         this.autoHideTimeouts = new Map();
     }
 
-    showMessage(message, type = 'info', autoHide = false, duration = 0) {
+    showMessage(message, type = 'info', autoHide = false, duration = 5000) {
         // 清除现有消息
         this.clearMessage();
 
@@ -63,7 +62,7 @@ class MessageManager {
             const timeoutId = setTimeout(() => {
                 this.clearMessage();
             }, duration);
-            this.autoHideTimeouts.set(type, timeoutId);
+            this.autoHideTimeouts.set(this.messageId, timeoutId);
         }
 
         return messageDiv;
@@ -80,13 +79,14 @@ class MessageManager {
             }, 200);
         }
 
-        this.autoHideTimeouts.forEach((timeoutId, type) => {
+        // 清除自动隐藏定时器
+        this.autoHideTimeouts.forEach((timeoutId, key) => {
             clearTimeout(timeoutId);
         });
         this.autoHideTimeouts.clear();
     }
 
-    showSuccess(message, autoHide = false, duration = 0) {
+    showSuccess(message, autoHide = true, duration = 5000) {
         return this.showMessage(message, 'success', autoHide, duration);
     }
 
@@ -94,11 +94,11 @@ class MessageManager {
         return this.showMessage(message, 'error', autoHide, duration);
     }
 
-    showWarning(message, autoHide = false, duration = 0) {
+    showWarning(message, autoHide = true, duration = 5000) {
         return this.showMessage(message, 'warning', autoHide, duration);
     }
 
-    showInfo(message, autoHide = false, duration = 0) {
+    showInfo(message, autoHide = true, duration = 3000) {
         return this.showMessage(message, 'info', autoHide, duration);
     }
 
@@ -465,3 +465,6 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// 全局导出
+window.MessageManager = MessageManager;

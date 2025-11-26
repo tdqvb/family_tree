@@ -1,5 +1,6 @@
+// static/js/components/relationshipInputManager.js
 /**
- * 关系表单组件 - 删除sibling关系版本
+ * 关系表单组件 - 简化版本
  * 只负责收集数据，验证交给后端
  */
 class RelationshipInputManager {
@@ -160,37 +161,37 @@ class RelationshipInputManager {
      * 获取表单数据
      */
     getFormData() {
-    const sourcePerson = this.sourcePersonSearch.getSelectedPerson();
-    const targetPerson = this.targetPersonSearch.getSelectedPerson();
+        const sourcePerson = this.sourcePersonSearch.getSelectedPerson();
+        const targetPerson = this.targetPersonSearch.getSelectedPerson();
 
-    // 简单的前端验证
-    if (!sourcePerson || !targetPerson) {
-        alert('请选择完整的人员信息');
-        return null;
+        // 简单的前端验证
+        if (!sourcePerson || !targetPerson) {
+            alert('请选择完整的人员信息');
+            return null;
+        }
+
+        if (!sourcePerson.id || !targetPerson.id) {
+            alert('人员信息不完整，请重新选择');
+            return null;
+        }
+
+        if (sourcePerson.id === targetPerson.id) {
+            alert('不能选择同一个成员建立关系');
+            return null;
+        }
+
+        if (!this.selectedRelationshipType) {
+            alert('请选择关系类型');
+            return null;
+        }
+
+        // 构建正确的API数据格式
+        return {
+            from_person_id: sourcePerson.id,  // 注意：使用下划线格式
+            to_person_id: targetPerson.id,    // 注意：使用下划线格式
+            relationship_type: this.selectedRelationshipType
+        };
     }
-
-    if (!sourcePerson.id || !targetPerson.id) {
-        alert('人员信息不完整，请重新选择');
-        return null;
-    }
-
-    if (sourcePerson.id === targetPerson.id) {
-        alert('不能选择同一个成员建立关系');
-        return null;
-    }
-
-    if (!this.selectedRelationshipType) {
-        alert('请选择关系类型');
-        return null;
-    }
-
-    // 构建正确的API数据格式
-    return {
-        from_person_id: sourcePerson.id,  // 注意：使用下划线格式
-        to_person_id: targetPerson.id,    // 注意：使用下划线格式
-        relationship_type: this.selectedRelationshipType
-    };
-}
 
     /**
      * 重置表单
@@ -217,3 +218,6 @@ class RelationshipInputManager {
         this.container.innerHTML = '';
     }
 }
+
+// 全局导出
+window.RelationshipInputManager = RelationshipInputManager;

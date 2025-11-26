@@ -1,5 +1,4 @@
-// static/js/personEdit.js
-
+// static/js/pages/personEdit.js
 class PersonEdit {
     constructor() {
         this.currentPerson = null;
@@ -7,8 +6,6 @@ class PersonEdit {
         this.birthDateManager = null;
         this.deathDateManager = null;
         this.messageManager = null;
-        this.formValidator = null;
-        this.formSubmitter = null;
         this.init();
     }
 
@@ -20,36 +17,6 @@ class PersonEdit {
     initializeManagers() {
         // 初始化消息管理器
         this.messageManager = new MessageManager('#edit-message-container', 'edit-message');
-
-        // 初始化表单验证器
-        this.formValidator = new FormValidator({
-            name: FormValidator.commonRules.required('姓名是必填字段'),
-            gender: FormValidator.commonRules.required('请选择性别'),
-            phone: {
-                validator: (value) => {
-                    if (value && !/^1[3-9]\d{9}$/.test(value)) {
-                        return '手机号格式不正确';
-                    }
-                    return null;
-                }
-            },
-            email: {
-                validator: (value) => {
-                    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                        return '邮箱格式不正确';
-                    }
-                    return null;
-                }
-            }
-        });
-
-        // 初始化表单提交器
-        this.formSubmitter = new FormSubmitter('edit-person-form', {
-            method: 'PUT',
-            onSuccess: (result) => this.handleSaveSuccess(result),
-            onError: (error) => this.handleSaveError(error),
-            onValidationError: (errors) => this.handleValidationError(errors)
-        });
     }
 
     initializeDateManagers() {
@@ -117,9 +84,9 @@ class PersonEdit {
 
     async showEditForm(personId) {
         try {
-            DomHelper.showLoading('edit-person-form-container', true, '加载编辑表单中...');
+            DomUtils.showLoading('edit-person-form-container', true, '加载编辑表单中...');
 
-            const person = await PersonApi.getPerson(personId);
+            const person = await ApiService.getPerson(personId);
 
             this.currentPerson = person;
             this.originalData = { ...this.currentPerson };
@@ -130,7 +97,7 @@ class PersonEdit {
             console.error('获取人员信息错误:', error);
             this.showMessage('获取人员信息失败: ' + error.message, 'error');
         } finally {
-            DomHelper.showLoading('edit-person-form-container', false);
+            DomUtils.showLoading('edit-person-form-container', false);
         }
     }
 
@@ -139,12 +106,12 @@ class PersonEdit {
         if (!container) return;
 
         // 解析日期数据
-        const birthDateData = DateDataParser.parseDateData(
+        const birthDateData = DateUtils.parseDateData(
             person.birth_date,
             person.birth_date_accuracy,
             person.birth_date_type
         );
-        const deathDateData = DateDataParser.parseDateData(
+        const deathDateData = DateUtils.parseDateData(
             person.death_date,
             person.death_date_accuracy,
             person.death_date_type
@@ -157,7 +124,7 @@ class PersonEdit {
                 <!-- 基本信息 -->
                 <div class="mb-4">
                     <label for="edit-name" class="block text-sm font-medium text-gray-700 mb-1">姓名 <span class="text-red-500">*</span></label>
-                    <input type="text" id="edit-name" name="name" value="${DomHelper.escapeHtml(person.name || '')}" required
+                    <input type="text" id="edit-name" name="name" value="${DomUtils.escapeHtml(person.name || '')}" required
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
                 </div>
 
@@ -194,7 +161,7 @@ class PersonEdit {
                         </select>
                     </div>
                     <div id="edit-birth_date_container">
-                        ${DateInputRenderer.renderDateInputs('birth', birthDateData)}
+                        ${DateUtils.renderDateInputs('birth', birthDateData)}
                     </div>
                 </div>
 
@@ -210,33 +177,33 @@ class PersonEdit {
                         </select>
                     </div>
                     <div id="edit-death_date_container">
-                        ${DateInputRenderer.renderDateInputs('death', deathDateData, showDeathInfo)}
+                        ${DateUtils.renderDateInputs('death', deathDateData, showDeathInfo)}
                     </div>
                 </div>
 
                 <!-- 扩展信息 -->
                 <div class="mb-4">
                     <label for="edit-phone" class="block text-sm font-medium text-gray-700 mb-1">电话</label>
-                    <input type="text" id="edit-phone" name="phone" value="${DomHelper.escapeHtml(person.phone || '')}"
+                    <input type="text" id="edit-phone" name="phone" value="${DomUtils.escapeHtml(person.phone || '')}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
                 </div>
 
                 <div class="mb-4">
                     <label for="edit-email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-                    <input type="email" id="edit-email" name="email" value="${DomHelper.escapeHtml(person.email || '')}"
+                    <input type="email" id="edit-email" name="email" value="${DomUtils.escapeHtml(person.email || '')}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
                 </div>
 
                 <div class="mb-4">
                     <label for="edit-birth_place" class="block text-sm font-medium text-gray-700 mb-1">出生地</label>
-                    <input type="text" id="edit-birth_place" name="birth_place" value="${DomHelper.escapeHtml(person.birth_place || '')}"
+                    <input type="text" id="edit-birth_place" name="birth_place" value="${DomUtils.escapeHtml(person.birth_place || '')}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
                 </div>
 
                 <div class="mb-6">
                     <label for="edit-biography" class="block text-sm font-medium text-gray-700 mb-1">生平简介</label>
                     <textarea id="edit-biography" name="biography" rows="3"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">${DomHelper.escapeHtml(person.biography || '')}</textarea>
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">${DomUtils.escapeHtml(person.biography || '')}</textarea>
                 </div>
             </form>
         `;
@@ -257,8 +224,8 @@ class PersonEdit {
     }
 
     toggleDeathInfo(show) {
-        DomHelper.showElement('edit-death_info', show);
-        DomHelper.setElementRequired('edit-death_date_accuracy', show);
+        DomUtils.showElement('edit-death_info', show);
+        DomUtils.setElementRequired('edit-death_date_accuracy', show);
     }
 
     async savePersonEdit() {
@@ -272,15 +239,7 @@ class PersonEdit {
             const formData = this.collectFormData();
             console.log('提交的数据:', formData);
 
-            this.formSubmitter.setOptions({
-                endpoint: `/api/persons/${this.currentPerson.id}`
-            });
-
-            const result = await this.formSubmitter.submit(formData, (data) => this.validateFormData(data));
-
-            if (result.success) {
-                this.handleSaveSuccess(result.data);
-            }
+            await this.submitForm(formData);
 
         } catch (error) {
             console.error('更新人员错误:', error);
@@ -290,7 +249,7 @@ class PersonEdit {
 
     validateForm() {
         const formData = this.collectFormData();
-        const validation = this.formValidator.validate(formData);
+        const validation = SimpleValidator.validatePerson(formData);
 
         const dateErrors = this.validateDateFields(formData);
         if (dateErrors.length > 0) {
@@ -303,10 +262,6 @@ class PersonEdit {
         }
 
         return validation.isValid;
-    }
-
-    validateFormData(data) {
-        return this.formValidator.validate(data);
     }
 
     validateDateFields(formData) {
@@ -323,11 +278,40 @@ class PersonEdit {
         return errors;
     }
 
+    async submitForm(formData) {
+        this.showLoading(true);
+
+        try {
+            const result = await ApiService.updatePerson(this.currentPerson.id, formData);
+            this.handleSaveSuccess(result);
+
+        } catch (error) {
+            this.handleSaveError(error);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    showLoading(show) {
+        const saveButton = document.getElementById('edit-save-btn');
+        if (saveButton) {
+            if (show) {
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 保存中...';
+                saveButton.classList.add('opacity-50');
+            } else {
+                saveButton.disabled = false;
+                saveButton.innerHTML = '<i class="fas fa-save mr-2"></i> 保存';
+                saveButton.classList.remove('opacity-50');
+            }
+        }
+    }
+
     collectFormData() {
         const form = document.getElementById('edit-person-form');
         const isLiving = form.querySelector('#edit-is_living')?.value === 'true';
 
-        return FormDataCollector.collectPersonAddData(form, isLiving);
+        return FormUtils.collectPersonData(form, isLiving);
     }
 
     handleValidationError(errors) {
@@ -362,11 +346,11 @@ class PersonEdit {
 
     hasChanges() {
         const form = document.getElementById('edit-person-form');
-        return FormDataCollector.hasFormChanges(this.originalData, form);
+        return FormUtils.hasFormChanges(this.originalData, form);
     }
 
     updateSaveButtonState() {
-        DomHelper.updateSaveButtonState('edit-save-btn', this.hasChanges());
+        DomUtils.updateSaveButtonState('edit-save-btn', this.hasChanges());
     }
 
     handleCloseRequest() {
@@ -399,7 +383,13 @@ class PersonEdit {
     }
 
     showMessage(message, type = 'info') {
-        this.messageManager[`show${type.charAt(0).toUpperCase() + type.slice(1)}`](message);
+        if (type === 'success') {
+            this.messageManager.showSuccess(message);
+        } else if (type === 'error') {
+            this.messageManager.showError(message);
+        } else {
+            this.messageManager.showInfo(message);
+        }
     }
 
     isModalOpen() {
@@ -414,5 +404,5 @@ let personEdit = null;
 document.addEventListener('DOMContentLoaded', function() {
     personEdit = new PersonEdit();
     window.personEdit = personEdit;
-    console.log('✅ personEdit 重构版本初始化完成 - 使用模块化架构');
+    console.log('✅ personEdit 初始化完成');
 });

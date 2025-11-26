@@ -1,5 +1,4 @@
-// static/js/personDetail.js
-
+// static/js/pages/personDetail.js
 class PersonDetail {
     constructor() {
         this.currentPerson = null;
@@ -44,16 +43,10 @@ class PersonDetail {
     async showPersonDetail(personId) {
         try {
             this.showLoading(true);
-            const response = await fetch(`/api/persons/${personId}`);
-            const result = await response.json();
-
-            if (response.ok) {
-                this.currentPerson = result;
-                this.renderPersonDetail(this.currentPerson);
-                this.openModal();
-            } else {
-                throw new Error(result.detail || '获取人员详情失败');
-            }
+            const response = await ApiService.getPerson(personId);
+            this.currentPerson = response;
+            this.renderPersonDetail(this.currentPerson);
+            this.openModal();
         } catch (error) {
             console.error('获取人员详情错误:', error);
             this.showMessage('获取人员详情失败: ' + error.message, 'error');
@@ -83,7 +76,7 @@ class PersonDetail {
                         <div class="mt-3 space-y-3">
                             <div class="flex justify-between items-center py-2 border-b border-blue-100">
                                 <span class="text-sm text-gray-600">姓名:</span>
-                                <p class="text-lg font-semibold text-gray-900">${this.escapeHtml(person.name) || '未填写'}</p>
+                                <p class="text-lg font-semibold text-gray-900">${DomUtils.escapeHtml(person.name) || '未填写'}</p>
                             </div>
                             <div class="flex justify-between items-center py-2 border-b border-blue-100">
                                 <span class="text-sm text-gray-600">性别:</span>
@@ -105,13 +98,13 @@ class PersonDetail {
                         <div class="mt-3 space-y-3">
                             <div class="flex justify-between items-center py-2 border-b border-green-100">
                                 <span class="text-sm text-gray-600">出生日期:</span>
-                                <p class="font-medium">${DateFormatter.formatDateDisplay(person.birth_date, person.birth_date_type, person.birth_date_accuracy)}
+                                <p class="font-medium">${DateUtils.formatDateDisplay(person.birth_date, person.birth_date_type, person.birth_date_accuracy)}
                                 </p>
                             </div>
                             ${person.birth_place ? `
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-gray-600">出生地:</span>
-                                <p class="font-medium text-right max-w-xs">${this.escapeHtml(person.birth_place)}</p>
+                                <p class="font-medium text-right max-w-xs">${DomUtils.escapeHtml(person.birth_place)}</p>
                             </div>
                             ` : ''}
                         </div>
@@ -127,7 +120,7 @@ class PersonDetail {
                         <div class="mt-3">
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-gray-600">逝世日期:</span>
-                                <p class="font-medium">${DateFormatter.formatDateDisplay(person.death_date, person.death_date_type, person.death_date_accuracy)}
+                                <p class="font-medium">${DateUtils.formatDateDisplay(person.death_date, person.death_date_type, person.death_date_accuracy)}
                                 </p>
                             </div>
                         </div>
@@ -144,7 +137,7 @@ class PersonDetail {
                                 <span class="text-sm text-gray-600">电话:</span>
                                 <p class="font-medium">
                                     <a href="tel:${person.phone}" class="text-blue-600 hover:text-blue-800 transition-colors">
-                                        📞 ${this.escapeHtml(person.phone)}
+                                        📞 ${DomUtils.escapeHtml(person.phone)}
                                     </a>
                                 </p>
                             </div>
@@ -154,7 +147,7 @@ class PersonDetail {
                                 <span class="text-sm text-gray-600">邮箱:</span>
                                 <p class="font-medium">
                                     <a href="mailto:${person.email}" class="text-blue-600 hover:text-blue-800 transition-colors">
-                                        📧 ${this.escapeHtml(person.email)}
+                                        📧 ${DomUtils.escapeHtml(person.email)}
                                     </a>
                                 </p>
                             </div>
@@ -169,7 +162,7 @@ class PersonDetail {
                         <label class="text-sm font-medium text-yellow-700 flex items-center">
                             <i class="fas fa-book mr-2"></i>生平简介
                         </label>
-                        <p class="mt-3 text-gray-700 leading-relaxed whitespace-pre-wrap">${this.escapeHtml(person.biography)}</p>
+                        <p class="mt-3 text-gray-700 leading-relaxed whitespace-pre-wrap">${DomUtils.escapeHtml(person.biography)}</p>
                     </div>
                 </div>
                 ` : ''}
@@ -247,36 +240,23 @@ class PersonDetail {
         }
     }
 
-    escapeHtml(unsafe) {
-        if (!unsafe) return '';
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
     showMessage(message, type = 'info') {
-        if (window.personList && typeof window.personList.showMessage === 'function') {
-            window.personList.showMessage(message, type);
-        } else {
-            // 备用消息显示
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${
-                type === 'success' ? 'bg-green-500 text-white' :
-                type === 'error' ? 'bg-red-500 text-white' :
-                'bg-blue-500 text-white'
-            }`;
-            alertDiv.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'} mr-2"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 4000);
-        }
+        // 创建简单消息提示
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${
+            type === 'success' ? 'bg-green-500 text-white' :
+            type === 'error' ? 'bg-red-500 text-white' :
+            'bg-blue-500 text-white'
+        }`;
+        alertDiv.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'} mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 4000);
     }
 }
 
@@ -288,5 +268,5 @@ document.addEventListener('DOMContentLoaded', function() {
     personDetail = new PersonDetail();
     window.personDetail = personDetail;
 
-    console.log('✅ personDetail 初始化完成 - 使用封装的日期格式化类');
+    console.log('✅ personDetail 初始化完成');
 });

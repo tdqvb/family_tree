@@ -1,5 +1,4 @@
-// static/js/dateInputManager.js
-
+// static/js/components/dateInputManager.js
 class DateInputManager {
     constructor(prefix, accuracySelectId, containers) {
         this.prefix = prefix;
@@ -189,81 +188,7 @@ class DateInputManager {
             return { isValid: false, message: '日期必须在1-31之间' };
         }
 
-        // 检查是否所有字段都已填写
-        if (year && month && day) {
-            // 获取日期类型（公历/农历）
-            const dateTypeSelect = document.getElementById(`${this.prefix}_date_type`);
-            const isSolar = dateTypeSelect ? dateTypeSelect.value === 'solar' : true;
-
-            if (isSolar) {
-                // 公历日期：验证具体月份的天数
-                const validationResult = this.validateSolarDateDays(year, month, day);
-                if (!validationResult.isValid) {
-                    return validationResult;
-                }
-            } else {
-                // 农历日期：只做基础验证（具体有效性由后端处理）
-                if (!this.isValidLunarDateBasic(day)) {
-                    return { isValid: false, message: '农历日期必须在1-30之间' };
-                }
-            }
-        }
-
         return { isValid: true };
-    }
-
-    /**
-     * 验证公历日期天数
-     */
-    validateSolarDateDays(year, month, day) {
-        // 各月份的天数
-        const daysInMonth = {
-            1: 31,  // 一月
-            2: this.isLeapYear(year) ? 29 : 28,  // 二月
-            3: 31,  // 三月
-            4: 30,  // 四月
-            5: 31,  // 五月
-            6: 30,  // 六月
-            7: 31,  // 七月
-            8: 31,  // 八月
-            9: 30,  // 九月
-            10: 31, // 十月
-            11: 30, // 十一月
-            12: 31  // 十二月
-        };
-
-        const maxDays = daysInMonth[month];
-
-        if (day > maxDays) {
-            const monthNames = {
-                1: '一月', 2: '二月', 3: '三月', 4: '四月', 5: '五月', 6: '六月',
-                7: '七月', 8: '八月', 9: '九月', 10: '十月', 11: '十一月', 12: '十二月'
-            };
-
-            let message = `${monthNames[month]}只有${maxDays}天`;
-            if (month === 2) {
-                message += `（${this.isLeapYear(year) ? '闰年' : '平年'}）`;
-            }
-
-            return { isValid: false, message: message };
-        }
-
-        return { isValid: true };
-    }
-
-    /**
-     * 判断是否为闰年
-     */
-    isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-    }
-
-    /**
-     * 农历基础验证（只验证范围）
-     */
-    isValidLunarDateBasic(day) {
-        // 农历日期范围：1-30
-        return day >= 1 && day <= 30;
     }
 
     /**
@@ -398,7 +323,5 @@ class DateInputManager {
     }
 }
 
-// 导出供其他模块使用
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = DateInputManager;
-}
+// 全局导出
+window.DateInputManager = DateInputManager;

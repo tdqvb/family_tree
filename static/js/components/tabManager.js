@@ -16,21 +16,24 @@ class TabManager {
         this.init();
     }
 
-    init() {
-        this.tabs.forEach(tab => {
-            const button = document.getElementById(tab.button);
-            const content = document.getElementById(tab.content);
+        init() {
+            // 确保 DOM 完全加载后初始化 - 最小修改添加在这里
+            setTimeout(() => {
+                this.tabs.forEach(tab => {
+                    const button = document.getElementById(tab.button);
+                    const content = document.getElementById(tab.content);
 
-            if (button && content) {
-                button.addEventListener('click', () => {
-                    this.switchTab(tab.id);
+                    if (button && content) {
+                        button.addEventListener('click', () => {
+                            this.switchTab(tab.id);
+                        });
+                    }
                 });
-            }
-        });
 
-        // 默认激活第一个标签
-        this.switchTab('add-person');
-    }
+                // 默认激活第一个标签
+                this.switchTab('add-person');
+            }, 100); // 延迟 100ms 确保 DOM 完全加载
+        }
 
     switchTab(tabId) {
         this.tabs.forEach(tab => {
@@ -61,9 +64,9 @@ class TabManager {
         console.log(`切换到标签: ${tabId}`);
 
         // 如果是亲属关系标签，确保关系管理器已初始化
-        if (tabId === 'add-relationship' && window.relationshipManager) {
-            // 重新加载成员列表
-            window.relationshipManager.loadExistingMembers();
+        if (tabId === 'add-relationship' && window.relationshipAdd) {
+            // 可以在这里添加关系页面的初始化逻辑
+            console.log('关系页面已激活');
         }
     }
 
@@ -81,9 +84,5 @@ class TabManager {
     }
 }
 
-// 初始化标签管理器
-let tabManager;
-
-document.addEventListener('DOMContentLoaded', function() {
-    tabManager = new TabManager();
-});
+// 全局导出
+window.TabManager = TabManager;

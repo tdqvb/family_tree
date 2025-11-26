@@ -1,5 +1,4 @@
 // static/js/pages/personAdd.js
-
 class PersonAdd {
     constructor() {
         console.log('🔧 初始化 PersonAdd');
@@ -31,17 +30,6 @@ class PersonAdd {
         // 使用 body 作为容器，确保消息显示在页面顶部
         this.messageManager = new MessageManager('body', 'person-form-message');
 
-        // 初始化表单提交器
-        this.formSubmitter = new FormSubmitter('add-person-form', {
-            endpoint: '/api/persons',
-            method: 'POST',
-            onSuccess: (result) => this.handleSuccess(result),
-            onError: (error) => this.handleError(error)
-        });
-
-        // 初始化表单验证器 - 只保留非空验证
-        this.validator = new FormValidator(this.getValidationRules());
-
         // 绑定事件监听器
         this.initEventListeners();
         this.toggleDeathInfo();
@@ -72,12 +60,12 @@ class PersonAdd {
             });
         }
 
-        // 实时验证 - 只保留非空验证
+        // 实时验证
         this.initRealTimeValidation();
     }
 
     /**
-     * 初始化实时验证 - 只保留非空验证
+     * 初始化实时验证
      */
     initRealTimeValidation() {
         const nameInput = document.getElementById('name');
@@ -137,22 +125,6 @@ class PersonAdd {
     }
 
     /**
-     * 获取验证规则 - 只保留非空验证
-     */
-    getValidationRules() {
-        return {
-            name: {
-                minLength: 1,
-                minLengthMessage: '姓名不能为空'
-            },
-            gender: {
-                pattern: /^(M|F)$/,
-                patternMessage: '请选择性别'
-            }
-        };
-    }
-
-    /**
      * 切换逝世信息显示
      */
     toggleDeathInfo() {
@@ -188,7 +160,7 @@ class PersonAdd {
         const formData = this.collectFormData();
         console.log('📋 收集的表单数据:', formData);
 
-        // 按照用户填写顺序进行验证 - 只验证必填字段
+        // 按照用户填写顺序进行验证
         if (!this.validateFormStepByStep(formData)) {
             return;
         }
@@ -198,8 +170,8 @@ class PersonAdd {
             return;
         }
 
-        // 使用验证器验证其他字段 - 只验证必填字段
-        const validation = this.validator.validate(formData);
+        // 使用验证器验证其他字段
+        const validation = SimpleValidator.validatePerson(formData);
         if (!validation.isValid) {
             this.showValidationErrors(validation.errors);
             return;
@@ -212,7 +184,7 @@ class PersonAdd {
 
         // 提交表单
         console.log('🚀 开始提交表单数据');
-        await this.formSubmitter.submit(formData);
+        await this.submitForm(formData);
     }
 
     /**
@@ -242,7 +214,7 @@ class PersonAdd {
     }
 
     /**
-     * 分步骤验证表单 - 只验证必填字段
+     * 分步骤验证表单
      */
     validateFormStepByStep(data) {
         // 第一步：验证姓名
@@ -376,13 +348,29 @@ class PersonAdd {
     }
 
     /**
+     * 提交表单
+     */
+    async submitForm(formData) {
+        try {
+            this.showLoading(true);
+
+            const result = await ApiService.createPerson(formData);
+            this.handleSuccess(result, formData);
+
+        } catch (error) {
+            this.handleError(error);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    /**
      * 处理成功响应
      */
-    handleSuccess(result) {
+    handleSuccess(result, formData) {
         console.log('✅ 添加人员成功，开始显示提示:', result);
 
         // 直接使用收集的表单数据，不需要等待后台返回
-        const formData = this.collectFormData();
         console.log('📊 使用表单数据显示提示:', formData);
 
         // 确保滚动到顶部，让用户看到消息
@@ -410,6 +398,24 @@ class PersonAdd {
     handleError(error) {
         console.error('❌ 添加人员失败:', error);
         this.messageManager.showError('添加人员失败: ' + (error.message || '网络错误，请重试'));
+    }
+
+    /**
+     * 显示加载状态
+     */
+    showLoading(show) {
+        const submitButton = document.querySelector('#add-person-form button[type="submit"]');
+        if (submitButton) {
+            if (show) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 提交中...';
+                submitButton.classList.add('opacity-50');
+            } else {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-save mr-2"></i> 保存成员';
+                submitButton.classList.remove('opacity-50');
+            }
+        }
     }
 
     /**

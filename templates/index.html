@@ -95,36 +95,31 @@
 <!-- 引入footer.html -->
 {% include 'layout/footer.html' %}
 
-<!-- 引入JavaScript文件 -->
+<!-- 引入JavaScript文件 - 按新架构调整 -->
 
-<!-- 1. 先加载基础工具类 -->
-<script src="{{ url_for('static', filename='js/utils/domHelper.js') }}"></script>
-<script src="{{ url_for('static', filename='js/utils/dateFormatter.js') }}"></script>
-<script src="{{ url_for('static', filename='js/utils/dateDataParser.js') }}"></script>
-<script src="{{ url_for('static', filename='js/utils/dateInputRenderer.js') }}"></script>
-<script src="{{ url_for('static', filename='js/utils/formDataCollector.js') }}"></script>
+<!-- 1. 核心工具和基础服务 -->
+<script src="{{ url_for('static', filename='js/core/utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/core/apiService.js') }}"></script>
+<script src="{{ url_for('static', filename='js/core/simpleValidator.js') }}"></script>
+<script src="{{ url_for('static', filename='js/core/messageManager.js') }}"></script>
 
-<!-- 2. 然后加载通用组件（按依赖顺序） -->
-<script src="{{ url_for('static', filename='js/components/personSearch.js') }}"></script>
-<script src="{{ url_for('static', filename='js/components/messageManager.js') }}"></script>
-<script src="{{ url_for('static', filename='js/components/tabManager.js') }}"></script>
-<script src="{{ url_for('static', filename='js/components/formValidator.js') }}"></script>
+<!-- 2. 通用组件 -->
 <script src="{{ url_for('static', filename='js/components/dateInputManager.js') }}"></script>
-<script src="{{ url_for('static', filename='js/components/relationshipInputManager.js') }}"></script>
-<script src="{{ url_for('static', filename='js/components/formSubmitter.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/personSearch.js') }}"></script>
 <script src="{{ url_for('static', filename='js/components/dataTable.js') }}"></script>
 <script src="{{ url_for('static', filename='js/components/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/tabManager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/relationshipInputManager.js') }}"></script>
 
-<!-- 3. 接着加载API服务层 -->
-<script src="{{ url_for('static', filename='js/api/personApi.js') }}"></script>
-<script src="{{ url_for('static', filename='js/api/relationshipApi.js') }}"></script>
-
-<!-- 4. 最后加载页面业务逻辑（按功能独立性） -->
+<!-- 3. 页面业务逻辑 -->
 <script src="{{ url_for('static', filename='js/pages/personAdd.js') }}"></script>
-<script src="{{ url_for('static', filename='js/pages/relationshipAdd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages/personList.js') }}"></script>
 <script src="{{ url_for('static', filename='js/pages/personDetail.js') }}"></script>
 <script src="{{ url_for('static', filename='js/pages/personEdit.js') }}"></script>
-<script src="{{ url_for('static', filename='js/pages/personList.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages/relationshipAdd.js') }}"></script>
+
+<!-- 4. 应用主入口 -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 </body>
 </html>
